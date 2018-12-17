@@ -3,16 +3,20 @@ const context = canvas.getContext('2d');
 
 context.scale(20, 20);
 
-context.fillStyle = "#000";
-context.fillRect(0, 0, canvas.clientWidth, canvas.height);
-
 const matrix = [
     [0, 0, 0],
     [1, 1, 1],
     [0, 1, 0],
 ];
 
-function drawMaterix(matrix, offset) {
+draw = () => {
+    context.fillStyle = "#000";
+    context.fillRect(0, 0, canvas.clientWidth, canvas.height);
+
+    drawMaterix(player.matrix, player.pos);
+}
+
+drawMaterix = (matrix, offset) => {
     matrix.forEach((row, y) => {
         row.forEach((value, x) => {
             if (value !== 0) {
@@ -27,4 +31,29 @@ function drawMaterix(matrix, offset) {
     });
 }
 
-drawMaterix(matrix, {x: 5, y: 5});
+let dropCounter = 0;
+let dropInterval = 1000;
+
+let lastTime = 0;
+update = (time = 0) => {
+    const deltaTime = time - lastTime;
+    lastTime = time;
+
+    dropCounter += deltaTime;
+    if (dropCounter > dropInterval) {
+        player.pos.y ++;
+        dropCounter = 0;
+    }
+
+    draw();
+    requestAnimationFrame(update);
+}
+
+const player = {
+    pos: {x: 5, y: 5},
+    matrix: matrix
+}
+
+update();
+
+// draw();
